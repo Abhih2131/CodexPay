@@ -14,8 +14,8 @@
 
 ## Precision and formatting policy
 - Calculations: 2-decimal precision in engine (`keepTwo` usage in simulation and tax path).
-- Display: rounded INR (0 decimals) using `formatInrDisplay` for UI and PDF/Excel string outputs.
-- Negative values (rebate/marginal relief) are displayed with a clear sign and INR format.
+- Display: rounded INR (0 decimals) using `formatInrDisplay` for UI and PDF output.
+- Excel export keeps monetary cells numeric and applies INR number formats so users can sort/filter/use formulas.
 
 ## Dependency and environment notes
 - This is a standard Next.js app with browser-side PDF/Excel generation.

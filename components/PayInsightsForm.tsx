@@ -10,9 +10,9 @@ const cities = ['Mumbai', 'Delhi', 'Chennai', 'Kolkata', 'Pune', 'Bengaluru'];
 
 type DraftInput = Omit<SimulationInput, 'pfApplicability'> & { pfApplicability: SimulationInput['pfApplicability'] | '' };
 
-const cardClass = 'rounded-2xl border border-slate-600/30 bg-slate-900/45 p-5 shadow-xl backdrop-blur-md';
+const cardClass = 'rounded-3xl border border-slate-500/25 bg-gradient-to-b from-slate-900/60 to-slate-900/35 p-6 shadow-2xl backdrop-blur-md';
 const labelClass = 'text-xs font-semibold uppercase tracking-wide text-slate-300';
-const inputClass = 'mt-2 w-full rounded-xl border border-slate-300/80 bg-white px-3 py-2 text-slate-900';
+const inputClass = 'mt-2 w-full rounded-xl border border-slate-200 bg-white/95 px-3 py-2.5 text-slate-900 shadow-sm transition focus:border-sky-400 focus:ring-2 focus:ring-sky-200';
 
 export function PayInsightsForm({ onSubmit }: { onSubmit: (input: SimulationInput) => void }) {
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -62,7 +62,7 @@ export function PayInsightsForm({ onSubmit }: { onSubmit: (input: SimulationInpu
         <p className="mt-1 text-sm text-slate-300">Configure compensation assumptions to generate an auditable CTC-to-net simulation.</p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-5 md:grid-cols-2">
         <label className="block"><span className={labelClass}>Annual Fixed CTC</span><input className={inputClass} type="number" value={form.annualFixedCtc} onChange={(e) => update('annualFixedCtc', Number(e.target.value))} />{errors.annualFixedCtc && <p className="mt-1 text-xs text-rose-300">{errors.annualFixedCtc}</p>}</label>
         <label className="block"><span className={labelClass}>Annual Variable Pay</span><input className={inputClass} type="number" value={form.annualVariablePay} onChange={(e) => update('annualVariablePay', Number(e.target.value))} /></label>
         <label className="block"><span className={labelClass}>Date of Joining</span><input className={inputClass} type="date" value={form.dateOfJoining} onChange={(e) => update('dateOfJoining', e.target.value)} /></label>
@@ -79,9 +79,9 @@ export function PayInsightsForm({ onSubmit }: { onSubmit: (input: SimulationInpu
         <label className="block"><span className={labelClass}>Rounding Method</span><select className={inputClass} value={form.roundingMethod} onChange={(e) => update('roundingMethod', e.target.value as SimulationInput['roundingMethod'])}><option value="2_decimals_internal">Keep 2 decimals internally, show rounded output</option></select></label>
       </div>
 
-      <div className="flex flex-wrap gap-3 pt-2">
-        <button onClick={submit} className="rounded-xl bg-sky-300 px-5 py-2.5 text-sm font-semibold text-slate-900">Run Simulation</button>
-        <button onClick={() => window.location.reload()} className="rounded-xl border border-slate-400 px-5 py-2.5 text-sm">Reset</button>
+      <div className="flex flex-wrap gap-3 border-t border-slate-700/40 pt-4">
+        <button onClick={submit} className="rounded-xl bg-gradient-to-r from-sky-300 to-cyan-200 px-5 py-2.5 text-sm font-semibold text-slate-900 shadow">Run Simulation</button>
+        <button onClick={() => window.location.reload()} className="rounded-xl border border-slate-300/70 bg-slate-950/25 px-5 py-2.5 text-sm">Reset</button>
       </div>
     </section>
   );
