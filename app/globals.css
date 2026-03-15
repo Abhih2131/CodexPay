@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-slate-950 text-slate-100 antialiased;
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+button {
+  @apply transition-all duration-200;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
