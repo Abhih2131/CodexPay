@@ -82,4 +82,16 @@ describe('pay insights engine', () => {
     expect(payload.summary.totalCtc).toBe(result.summary.totalCtc);
     expect(payload.sections.ctcStructure.totalCtc.annual).toBe(result.ctcStructure.totalCtc.annual);
   });
+
+  test('benchmark case retains approved integrity and tax outcomes', () => {
+    const result = runSimulation(benchmark);
+    expect(result.ctcStructure.fixedCtc.annual).toBe(6000000);
+    expect(result.ctcStructure.totalCtc.annual).toBe(6000000);
+    expect(result.summary.totalCtc).toBe(6000000);
+    expect(result.tax.taxableIncome).toBeCloseTo(5058269.23, 2);
+    expect(result.tax.totalSlabTax).toBeCloseTo(1097480.77, 2);
+    expect(result.tax.surcharge).toBeCloseTo(109748.08, 2);
+    expect(result.tax.marginalRelief).toBeCloseTo(68959.62, 2);
+    expect(result.tax.totalAnnualTax).toBeCloseTo(1183800, 2);
+  });
 });

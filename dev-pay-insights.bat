@@ -10,7 +10,11 @@ if %errorlevel% neq 0 (
 
 if not exist "node_modules" (
   echo Installing dependencies...
-  call npm install
+  if exist "package-lock.json" (
+    call npm ci
+  ) else (
+    call npm install
+  )
   if %errorlevel% neq 0 exit /b %errorlevel%
 )
 

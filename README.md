@@ -24,7 +24,7 @@
 
 ## Local run (Mac/Linux)
 ```bash
-npm install
+npm install   # or npm ci when lockfile is present
 npm run dev
 ```
 Open `http://localhost:3000`.
@@ -43,7 +43,7 @@ npm run start
 
 Both scripts:
 - verify Node is available
-- install dependencies if missing
+- install dependencies if missing (prefers `npm ci` when lockfile exists)
 - use explicit port `3000`
 - return failure codes for supportability
 
