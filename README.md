@@ -5,13 +5,22 @@
 - Deterministic salary simulation engine in `lib/calculations`.
 - Config-driven tax/PT/PF constants under `lib/config`.
 - Single source-of-truth `runSimulation` output consumed by UI and exports.
-- PDF (`jspdf`) and Excel (`xlsx`) exports generated from output payload.
+- PDF (`jspdf`) and Excel (`xlsx`) exports generated from the same computed payload.
 
-## Assumptions
-- India-only payroll and tax logic, New Regime only.
-- FY anchor starts on 1-Apr with DOJ annualization context note.
-- Professional Tax supports Maharashtra explicitly (`₹2,500`) and extensible map.
-- Variable pay excluded from recurring monthly in-hand except when monthly payout selected.
+## Runtime hardening notes
+- `package.json` includes explicit Windows dev/prod scripts and fixed port behavior (`3000`).
+- Batch files use `call`, check Node in PATH, and propagate error codes.
+- This reduces common on-prem script failure modes where `npm.cmd` exits batch flow unexpectedly.
+
+## Precision and formatting policy
+- Calculations: 2-decimal precision in engine (`keepTwo` usage in simulation and tax path).
+- Display: rounded INR (0 decimals) using `formatInrDisplay` for UI and PDF/Excel string outputs.
+- Negative values (rebate/marginal relief) are displayed with a clear sign and INR format.
+
+## Dependency and environment notes
+- This is a standard Next.js app with browser-side PDF/Excel generation.
+- No DB or external runtime service is required in V1.
+- If install fails in restricted networks, configure npm registry/proxy access for Node + npm first.
 
 ## Local run (Mac/Linux)
 ```bash
@@ -20,23 +29,23 @@ npm run dev
 ```
 Open `http://localhost:3000`.
 
-## Local production run
+## Local production run (Mac/Linux)
 ```bash
 npm run build
 npm run start
 ```
 
 ## Windows on-prem usage
-Root cause fixed: batch scripts now use `call` for npm commands so execution reliably returns to the parent batch flow.
-
-- Development: double-click `dev-pay-insights.bat`.
-- Production: double-click `start-pay-insights.bat`.
+1. Install Node.js 20+ and ensure `node` + `npm` are available in PATH.
+2. Open project folder.
+3. Development mode: run `dev-pay-insights.bat`.
+4. Production mode: run `start-pay-insights.bat`.
 
 Both scripts:
 - verify Node is available
-- install dependencies if needed
-- run with explicit port `3000`
-- propagate failure codes for supportability
+- install dependencies if missing
+- use explicit port `3000`
+- return failure codes for supportability
 
 ## Test
 ```bash
@@ -47,8 +56,9 @@ npm run test
 1. Push repository to Git provider.
 2. Import project in Vercel.
 3. Framework preset: Next.js.
-4. No required env vars for V1 (optional `.env.example`).
-5. Deploy.
+4. Keep Node 20+ in project settings.
+5. No required env vars for V1 (`.env.example` is optional metadata only).
+6. Deploy.
 
 ## Key module coverage
 - 14 input fields with validations.

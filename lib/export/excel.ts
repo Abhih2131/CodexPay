@@ -1,12 +1,13 @@
 import * as XLSX from 'xlsx';
 import { SimulationResult } from '@/types/simulation';
 import { buildExportPayload } from './exportData';
+import { formatInrDisplay } from '@/lib/formatters/number';
 
 function sectionRows(section: Record<string, { annual: number; monthly: number }>) {
   return Object.entries(section).map(([label, values]) => ({
     Item: label,
-    Annual: values.annual,
-    Monthly: values.monthly
+    Annual: formatInrDisplay(values.annual),
+    Monthly: formatInrDisplay(values.monthly)
   }));
 }
 
@@ -17,10 +18,10 @@ export function downloadExcel(result: SimulationResult) {
   XLSX.utils.book_append_sheet(
     wb,
     XLSX.utils.json_to_sheet([
-      { Metric: 'Total CTC', Value: payload.summary.totalCtc },
-      { Metric: 'Monthly Gross', Value: payload.summary.monthlyGross },
-      { Metric: 'Monthly Net Salary', Value: payload.summary.monthlyNetSalary },
-      { Metric: 'Annual Tax', Value: payload.summary.annualTax },
+      { Metric: 'Total CTC', Value: formatInrDisplay(payload.summary.totalCtc) },
+      { Metric: 'Monthly Gross', Value: formatInrDisplay(payload.summary.monthlyGross) },
+      { Metric: 'Monthly Net Salary', Value: formatInrDisplay(payload.summary.monthlyNetSalary) },
+      { Metric: 'Annual Tax', Value: formatInrDisplay(payload.summary.annualTax) },
       { Metric: 'Generated At', Value: payload.timestamp }
     ]),
     'Summary'
@@ -39,14 +40,14 @@ export function downloadExcel(result: SimulationResult) {
   XLSX.utils.book_append_sheet(
     wb,
     XLSX.utils.json_to_sheet([
-      { Item: 'Taxable Income', Annual: payload.sections.tax.taxableIncome },
-      ...payload.sections.tax.slabTaxes.map((x) => ({ Item: x.label, Annual: x.amount })),
-      { Item: 'Total Slab Tax', Annual: payload.sections.tax.totalSlabTax },
-      { Item: 'Rebate', Annual: -payload.sections.tax.rebate },
-      { Item: 'Surcharge', Annual: payload.sections.tax.surcharge },
-      { Item: 'Marginal Relief', Annual: -payload.sections.tax.marginalRelief },
-      { Item: 'Cess', Annual: payload.sections.tax.cess },
-      { Item: 'Total Annual Tax', Annual: payload.sections.tax.totalAnnualTax }
+      { Item: 'Taxable Income', Annual: formatInrDisplay(payload.sections.tax.taxableIncome) },
+      ...payload.sections.tax.slabTaxes.map((x) => ({ Item: x.label, Annual: formatInrDisplay(x.amount) })),
+      { Item: 'Total Slab Tax', Annual: formatInrDisplay(payload.sections.tax.totalSlabTax) },
+      { Item: 'Rebate', Annual: formatInrDisplay(-payload.sections.tax.rebate) },
+      { Item: 'Surcharge', Annual: formatInrDisplay(payload.sections.tax.surcharge) },
+      { Item: 'Marginal Relief', Annual: formatInrDisplay(-payload.sections.tax.marginalRelief) },
+      { Item: 'Cess', Annual: formatInrDisplay(payload.sections.tax.cess) },
+      { Item: 'Total Annual Tax', Annual: formatInrDisplay(payload.sections.tax.totalAnnualTax) }
     ]),
     'Tax'
   );

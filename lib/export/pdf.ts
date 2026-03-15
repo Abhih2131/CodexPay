@@ -3,11 +3,11 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { SimulationResult } from '@/types/simulation';
-import { formatDateTime, formatInr } from '@/lib/formatters/number';
+import { formatDateTime, formatInrDisplay } from '@/lib/formatters/number';
 
 const mapSection = (title: string, data: Record<string, { annual: number; monthly: number }>) => ({
   title,
-  body: Object.entries(data).map(([k, v]) => [k, formatInr(v.annual), formatInr(v.monthly)])
+  body: Object.entries(data).map(([k, v]) => [k, formatInrDisplay(v.annual), formatInrDisplay(v.monthly)])
 });
 
 export function downloadPdf(result: SimulationResult) {
@@ -21,10 +21,10 @@ export function downloadPdf(result: SimulationResult) {
     startY: 24,
     head: [['Summary', 'Value']],
     body: [
-      ['Total CTC', formatInr(result.summary.totalCtc)],
-      ['Monthly Gross', formatInr(result.summary.monthlyGross)],
-      ['Monthly Net Salary / In-hand', formatInr(result.summary.monthlyNetSalary)],
-      ['Annual Tax', formatInr(result.summary.annualTax)]
+      ['Total CTC', formatInrDisplay(result.summary.totalCtc)],
+      ['Monthly Gross', formatInrDisplay(result.summary.monthlyGross)],
+      ['Monthly Net Salary / In-hand', formatInrDisplay(result.summary.monthlyNetSalary)],
+      ['Annual Tax', formatInrDisplay(result.summary.annualTax)]
     ],
     theme: 'grid',
     headStyles: { fillColor: [19, 40, 74] }
@@ -61,14 +61,14 @@ export function downloadPdf(result: SimulationResult) {
     startY: y,
     head: [['Detailed Tax Calculation', 'Amount']],
     body: [
-      ['Taxable Income', formatInr(result.tax.taxableIncome)],
-      ...result.tax.slabTaxes.map((s) => [s.label, formatInr(s.amount)]),
-      ['Total Slab Tax', formatInr(result.tax.totalSlabTax)],
-      ['Rebate', formatInr(-result.tax.rebate)],
-      ['Surcharge', formatInr(result.tax.surcharge)],
-      ['Marginal Relief', formatInr(-result.tax.marginalRelief)],
-      ['Cess', formatInr(result.tax.cess)],
-      ['Total Annual Tax', formatInr(result.tax.totalAnnualTax)]
+      ['Taxable Income', formatInrDisplay(result.tax.taxableIncome)],
+      ...result.tax.slabTaxes.map((s) => [s.label, formatInrDisplay(s.amount)]),
+      ['Total Slab Tax', formatInrDisplay(result.tax.totalSlabTax)],
+      ['Rebate', formatInrDisplay(-result.tax.rebate)],
+      ['Surcharge', formatInrDisplay(result.tax.surcharge)],
+      ['Marginal Relief', formatInrDisplay(-result.tax.marginalRelief)],
+      ['Cess', formatInrDisplay(result.tax.cess)],
+      ['Total Annual Tax', formatInrDisplay(result.tax.totalAnnualTax)]
     ],
     theme: 'grid',
     headStyles: { fillColor: [19, 40, 74] }

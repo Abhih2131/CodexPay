@@ -79,13 +79,13 @@ export default function Home() {
           }}
         />
       ) : (
-        <section className="space-y-5 rounded-3xl border border-slate-600/30 bg-slate-900/45 p-5 shadow-2xl backdrop-blur-md md:p-7">
+        <section className="space-y-6 rounded-3xl border border-slate-500/30 bg-gradient-to-b from-slate-900/60 to-slate-900/35 p-5 shadow-2xl backdrop-blur-md md:p-7">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-2xl font-semibold">Pay Insights Output</h2>
             <div className="flex flex-wrap gap-2">
-              <button className="rounded-xl border border-slate-400 px-4 py-2 text-sm" onClick={() => setResult(null)}>Edit Inputs</button>
-              <button className="rounded-xl bg-sky-300 px-4 py-2 text-sm font-semibold text-slate-900" onClick={() => downloadPdf(result)}>Download PDF</button>
-              <button className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-900" onClick={() => downloadExcel(result)}>Download Excel</button>
+              <button className="rounded-xl border border-slate-300/70 bg-slate-950/25 px-4 py-2 text-sm font-medium" onClick={() => setResult(null)}>Edit Inputs</button>
+              <button className="rounded-xl bg-gradient-to-r from-sky-300 to-cyan-200 px-4 py-2 text-sm font-semibold text-slate-900 shadow" onClick={() => downloadPdf(result)}>Download PDF</button>
+              <button className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow" onClick={() => downloadExcel(result)}>Download Excel</button>
             </div>
           </div>
           <SummaryCards summary={result.summary} />
