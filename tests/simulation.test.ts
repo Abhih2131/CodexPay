@@ -46,6 +46,11 @@ describe('pay insights engine', () => {
     expect(calculateProfessionalTax('Maharashtra', 'auto')).toBe(2500);
   });
 
+
+  test('lower income rebate can reduce annual tax to zero where eligible', () => {
+    const eligible = calculateTax(1200000);
+    expect(eligible.totalAnnualTax).toBe(0);
+  });
   test('tax slabs, rebate, surcharge, marginal relief, cess', () => {
     const low = calculateTax(600000);
     expect(low.rebate).toBeGreaterThan(0);

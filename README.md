@@ -10,6 +10,7 @@
 ## Runtime hardening notes
 - `package.json` includes explicit Windows dev/prod scripts and fixed port behavior (`3000`).
 - Batch files use `call`, check Node in PATH, and propagate error codes.
+- Batch files prefer `npm ci` when lockfile exists and fallback to `npm install` otherwise.
 - This reduces common on-prem script failure modes where `npm.cmd` exits batch flow unexpectedly.
 
 ## Precision and formatting policy
@@ -46,6 +47,11 @@ Both scripts:
 - install dependencies if missing (prefers `npm ci` when lockfile exists)
 - use explicit port `3000`
 - return failure codes for supportability
+
+### Troubleshooting
+- If `node` not found: reopen terminal after Node installation or fix PATH.
+- If npm install fails with company proxy: set registry/proxy and rerun install.
+- If port 3000 is busy: stop the existing process using that port before rerun.
 
 ## Test
 ```bash
