@@ -32,6 +32,10 @@ function configureWorksheet(worksheet: XLSX.WorkSheet, widths: number[], withFil
   }
 }
 
+
+function setFreezeTopRow(worksheet: XLSX.WorkSheet) {
+  (worksheet as XLSX.WorkSheet & { [key: string]: unknown })['!freeze'] = { xSplit: 0, ySplit: 1 };
+}
 export function downloadExcel(result: SimulationResult) {
   const payload = buildExportPayload(result);
   const wb = XLSX.utils.book_new();
@@ -45,27 +49,32 @@ export function downloadExcel(result: SimulationResult) {
   ]);
   applyNumberFormat(summarySheet, [1]);
   configureWorksheet(summarySheet, [34, 20]);
+  setFreezeTopRow(summarySheet);
   XLSX.utils.book_append_sheet(wb, summarySheet, 'Summary');
 
   const inputSheet = XLSX.utils.json_to_sheet(
     Object.entries(payload.inputs).map(([field, value]) => ({ Field: INPUT_LABELS[field as keyof typeof INPUT_LABELS] ?? field, Value: String(value) }))
   );
   configureWorksheet(inputSheet, [36, 34]);
+  setFreezeTopRow(inputSheet);
   XLSX.utils.book_append_sheet(wb, inputSheet, 'Input Snapshot');
 
   const ctcSheet = XLSX.utils.json_to_sheet(mapSectionRows(payload.sections.ctcStructure, SECTION_LABELS.ctcStructure));
   applyNumberFormat(ctcSheet, [1, 2]);
   configureWorksheet(ctcSheet, [36, 20, 20]);
+  setFreezeTopRow(ctcSheet);
   XLSX.utils.book_append_sheet(wb, ctcSheet, 'CTC Structure');
 
   const grossSheet = XLSX.utils.json_to_sheet(mapSectionRows(payload.sections.monthlyGrossCalculation, SECTION_LABELS.monthlyGrossCalculation));
   applyNumberFormat(grossSheet, [1, 2]);
   configureWorksheet(grossSheet, [36, 20, 20]);
+  setFreezeTopRow(grossSheet);
   XLSX.utils.book_append_sheet(wb, grossSheet, 'Monthly Gross');
 
   const deductionSheet = XLSX.utils.json_to_sheet(mapSectionRows(payload.sections.deductions, SECTION_LABELS.deductions));
   applyNumberFormat(deductionSheet, [1, 2]);
   configureWorksheet(deductionSheet, [36, 20, 20]);
+  setFreezeTopRow(deductionSheet);
   XLSX.utils.book_append_sheet(wb, deductionSheet, 'Deductions');
 
   const taxSheet = XLSX.utils.json_to_sheet([
@@ -80,11 +89,13 @@ export function downloadExcel(result: SimulationResult) {
   ]);
   applyNumberFormat(taxSheet, [1]);
   configureWorksheet(taxSheet, [44, 20]);
+  setFreezeTopRow(taxSheet);
   XLSX.utils.book_append_sheet(wb, taxSheet, 'Tax Calculation');
 
   const netSheet = XLSX.utils.json_to_sheet(mapSectionRows(payload.sections.netSalary, SECTION_LABELS.netSalary));
   applyNumberFormat(netSheet, [1, 2]);
   configureWorksheet(netSheet, [36, 20, 20]);
+  setFreezeTopRow(netSheet);
   XLSX.utils.book_append_sheet(wb, netSheet, 'Net Salary');
 
   const ts = new Date().toISOString().replace(/[-:]/g, '').replace('T', '-').slice(0, 15);

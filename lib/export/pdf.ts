@@ -6,9 +6,19 @@ import { SimulationResult } from '@/types/simulation';
 import { formatDateTime, formatInrDisplay } from '@/lib/formatters/number';
 import { INPUT_LABELS, SECTION_LABELS, mapSectionRows } from './labels';
 
+function ensureSpace(doc: jsPDF, y: number, requiredHeight = 120) {
+  const pageHeight = doc.internal.pageSize.getHeight();
+  if (y + requiredHeight > pageHeight - 36) {
+    doc.addPage();
+    return 40;
+  }
+  return y;
+}
+
 function addSectionTable(doc: jsPDF, startY: number, title: string, rows: Array<{ label: string; annual: number; monthly: number }>) {
+  const y = ensureSpace(doc, startY, 150);
   autoTable(doc, {
-    startY,
+    startY: y,
     head: [[title, 'Annual', 'Monthly']],
     body: rows.map((row) => [row.label, formatInrDisplay(row.annual), formatInrDisplay(row.monthly)]),
     theme: 'grid',
@@ -65,6 +75,7 @@ export function downloadPdf(result: SimulationResult) {
   y = addSectionTable(doc, y, 'Monthly Gross Calculation', mapSectionRows(result.monthlyGrossCalculation, SECTION_LABELS.monthlyGrossCalculation));
   y = addSectionTable(doc, y, 'Deductions / Salary Before Tax', mapSectionRows(result.deductions, SECTION_LABELS.deductions));
 
+  y = ensureSpace(doc, y, 180);
   autoTable(doc, {
     startY: y,
     head: [['Detailed Tax Calculation', 'Amount']],
@@ -85,7 +96,12 @@ export function downloadPdf(result: SimulationResult) {
   });
   y = (doc as any).lastAutoTable.finalY + 6;
 
-  addSectionTable(doc, y, 'Net Salary', mapSectionRows(result.netSalary, SECTION_LABELS.netSalary));
+  y = addSectionTable(doc, y, 'Net Salary', mapSectionRows(result.netSalary, SECTION_LABELS.netSalary));
+
+  y = ensureSpace(doc, y, 72);
+  doc.setTextColor(71, 85, 105);
+  doc.setFontSize(8.5);
+  doc.text('Assumptions: New Regime only; Maharashtra PT annualized at ₹2,500; variable pay excluded from recurring monthly in-hand unless monthly payout timing is selected.', 40, y, { maxWidth: doc.internal.pageSize.getWidth() - 80 });
 
   const pageCount = doc.getNumberOfPages();
   for (let i = 1; i <= pageCount; i += 1) {
